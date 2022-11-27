@@ -15,7 +15,10 @@ class RandomWord:
                 json = res.json()
                 self.word = json["word"].upper()
                 self.chars = list(self.word)
-        except requests.exceptions:
+                return "Successfully got word."
+            elif not res.ok:
+                raise Exception
+        except:
             return "Unable to get word."
 
     @property

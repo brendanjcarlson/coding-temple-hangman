@@ -94,7 +94,7 @@ class App:
                 output += f" {char} "
             else:
                 output += " _ "
-        return f"{output.lstrip(' ')}\n"
+        return f"{output.strip(' ')}\n"
 
     # GETS ASCII ART FOR AMOUNT OF LIVES REMAINING
     def display_art(self):
@@ -163,12 +163,14 @@ class App:
                 time.sleep(1)
                 user_again = input(self.dialogue["inputs"]["invalid"])
 
+    # True only if player has guessed all letters correctly, else False
     @property
-    def player_won(self):  # True only if player has guessed all letters correctly, else False
+    def player_won(self):
         return self.correct_count == self.secret.length
 
+    # 7+ wrong guesses -> True, else False
     @property
-    def player_lost(self):  # 7+ wrong guesses -> True, else False
+    def player_lost(self):
         return self.incorrect_count >= self.lives
 
     # DRIVER CODE
