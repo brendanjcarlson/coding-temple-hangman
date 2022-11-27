@@ -6,20 +6,20 @@ class RandomWord:
         self.word = ''
         self.chars = []
         self.url = 'https://api.api-ninjas.com/v1/randomword'
-        self.get()
+        self.get_word()
 
-    def get(self):
+    def get_word(self):
         res = requests.get(self.url)
         try:
             if res.ok:
                 json = res.json()
                 self.word = json["word"].upper()
                 self.chars = list(self.word)
-                return "Successfully got word."
-            elif not res.ok:
+                return "Success"
+            else:
                 raise Exception
         except:
-            return "Unable to get word."
+            return "Bad response"
 
     @property
     def length(self):

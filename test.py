@@ -15,15 +15,23 @@ class RandomWordTest(unittest.TestCase):
     def setUp(self):
         self.obj = RandomWord()
 
-    def test_get(self):
-        res_one = self.obj.get()
-        self.assertEqual(res_one, "Successfully got word.")
+    def test_get_word(self):
+        with patch('RandomWord.requests.get') as mock_get:
+            mock_get.return_value.ok = True
+            mock_get.return_value.text = "Success"
+            word = self.obj.get_word()
+            mock_get.assert_called_with(
+                'https://api.api-ninjas.com/v1/randomword')
+            self.assertEqual(word, "Success")
 
-        self.obj.url = "https://api.api-ninjas.com/v1/INTENTIONALLY_BAD_URL_123AD$$SF#12423AZCVNLA"
-        res_two = self.obj.get()
-        self.assertEqual(res_two, "Unable to get word.")
+            mock_get.return_value.ok = False
+            mock_get.return_value.text = "Bad response"
+            word = self.obj.get_word()
+            mock_get.assert_called_with(
+                'https://api.api-ninjas.com/v1/randomword')
+            self.assertEqual(word, "Bad response")
 
-    def test_get_setup(self):
+    def test_get_word_setup(self):
         self.assertTrue(self.obj.word)
         self.assertListEqual(list(self.obj.word), self.obj.chars)
 
@@ -55,24 +63,19 @@ class AppTest(unittest.TestCase):
 
     def test_display_word(self):
         self.obj.guessed_chars = []
-        res_one = self.obj.display_word()
-        self.assertEqual(res_one, "_  _  _  _  _  _  _\n")
+        self.assertEqual(self.obj.display_word(), "_  _  _  _  _  _  _\n")
 
         self.obj.guessed_chars = ["X", "R"]
-        res_two = self.obj.display_word()
-        self.assertEqual(res_two, "_  _  _  _  _  _  _\n")
+        self.assertEqual(self.obj.display_word(), "_  _  _  _  _  _  _\n")
 
         self.obj.guessed_chars = ["T", "I"]
-        res_three = self.obj.display_word()
-        self.assertEqual(res_three, "T  _  _  T  I  _  _\n")
+        self.assertEqual(self.obj.display_word(), "T  _  _  T  I  _  _\n")
 
         self.obj.guessed_chars = ["T", "E", "S", "I", "N", "G"]
-        res_four = self.obj.display_word()
-        self.assertEqual(res_four, "T  E  S  T  I  N  G\n")
+        self.assertEqual(self.obj.display_word(), "T  E  S  T  I  N  G\n")
 
         self.obj.guessed_chars = ["X", "Y", "Z", "T", "E", "S", "I", "N", "G"]
-        res_five = self.obj.display_word()
-        self.assertEqual(res_five, "T  E  S  T  I  N  G\n")
+        self.assertEqual(self.obj.display_word(), "T  E  S  T  I  N  G\n")
 
     def test_display_guessed(self):
         self.obj.guessed_chars = ["C", "B", "A"]
@@ -84,17 +87,18 @@ class AppTest(unittest.TestCase):
         self.assertEqual(res_two, "GUESSED LETTERS:\nA B C\n")
 
     def test_display_banter(self):
-        res_one = self.obj.display_banter("pep")
-        self.assertIn(res_one, self.obj.dialogue["banter"]["pep"])
 
-        res_two = self.obj.display_banter("smack")
-        self.assertIn(res_two, self.obj.dialogue["banter"]["smack"])
+        self.assertIn(self.obj.display_banter("pep"),
+                      self.obj.dialogue["banter"]["pep"])
 
-        res_three = self.obj.display_banter("win")
-        self.assertIn(res_three, self.obj.dialogue["banter"]["win"])
+        self.assertIn(self.obj.display_banter("smack"),
+                      self.obj.dialogue["banter"]["smack"])
 
-        res_four = self.obj.display_banter("lose")
-        self.assertIn(res_four, self.obj.dialogue["banter"]["lose"])
+        self.assertIn(self.obj.display_banter("win"),
+                      self.obj.dialogue["banter"]["win"])
+
+        self.assertIn(self.obj.display_banter("lose"),
+                      self.obj.dialogue["banter"]["lose"])
 
     def test_guess(self):
         pass
