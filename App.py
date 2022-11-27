@@ -118,28 +118,28 @@ class App:
 
     # TAKES IN USER GUESS AND ADDS IT TO GUESSED CHARACTERS LIST
     def guess(self):
-        user_guess = input(self.dialogue["inputs"]["guess"]).upper()
+        user_guess = input(self.dialogue["inputs"]["guess"])
         guessing = True
         while guessing:
             if len(user_guess) > 1:
-                user_guess = input(self.dialogue["inputs"]["long"]).upper()
+                user_guess = input(self.dialogue["inputs"]["long"])
             elif not user_guess.isalpha():
-                user_guess = input(self.dialogue["inputs"]["num_sym"]).upper()
+                user_guess = input(self.dialogue["inputs"]["num_sym"])
             elif user_guess in self.guessed_chars:
-                user_guess = input(self.dialogue["inputs"]["repeat"]).upper()
+                user_guess = input(self.dialogue["inputs"]["repeat"])
             else:
-                self.guessed_chars.append(user_guess)
+                self.guessed_chars.append(user_guess.upper())
                 guessing = False
-        return user_guess
+        return user_guess.upper()
 
     # CHECKS IF USER GUESS IS IN THE SECRET WORD AND UPDATES SCORE
     def check_letter(self, guess):
-        if guess not in self.secret.word:
+        if guess not in self.secret.chars:
             self.incorrect_count += 1
-            return 'smack'
+            return "smack"
         else:
             self.correct_count += self.secret.chars.count(guess)
-            return 'pep'
+            return "pep"
 
     # ASKS USER IF THEY WANT TO PLAY AGAIN
     def again(self):

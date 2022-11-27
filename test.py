@@ -1,4 +1,11 @@
+# import unittest
+# from unittest.mock import patch
+# from io import StringIO
+# from RandomWord import RandomWord
+# from App import App
 import unittest
+from unittest.mock import patch
+from io import StringIO
 from RandomWord import RandomWord
 from App import App
 
@@ -7,24 +14,22 @@ class RandomWordTest(unittest.TestCase):
 
     def setUp(self):
         self.obj = RandomWord()
-        self.test_word = self.obj.word
-        self.test_chars = self.obj.chars
 
     def test_get(self):
         res_one = self.obj.get()
         self.assertEqual(res_one, "Successfully got word.")
 
-        self.obj.url = "https://api.api-ninjas.com/v1/intentionallybadurl"
+        self.obj.url = "https://api.api-ninjas.com/v1/INTENTIONALLY_BAD_URL_123AD$$SF#12423AZCVNLA"
         res_two = self.obj.get()
         self.assertEqual(res_two, "Unable to get word.")
 
     def test_get_setup(self):
-        self.assertTrue(self.test_word)
-        self.assertListEqual(list(self.test_word), self.test_chars)
+        self.assertTrue(self.obj.word)
+        self.assertListEqual(list(self.obj.word), self.obj.chars)
 
     def test_length(self):
-        self.assertEqual(len(self.test_word), len(
-            self.test_chars), self.obj.length)
+        self.assertEqual(len(self.obj.word), self.obj.length)
+        self.assertEqual(len(self.obj.chars), self.obj.length)
 
 
 class AppTest(unittest.TestCase):
@@ -32,6 +37,7 @@ class AppTest(unittest.TestCase):
     def setUp(self):
         self.obj = App()
         self.obj.secret.word = "TESTING"
+        self.obj.secret.chars = list(self.obj.secret.word)
 
     def test_reset(self):
         self.obj.incorrect_count = 1
@@ -42,8 +48,10 @@ class AppTest(unittest.TestCase):
         self.assertEqual(self.obj.correct_count, 0)
         self.assertEqual(self.obj.guessed_chars, [])
 
-    def test_intro(self):
-        pass
+    def test_intro_yes(self):
+        with patch('sys.stdout', new=StringIO()) as fake_out:
+            pass
+        # y, n, invalid
 
     def test_display_word(self):
         self.obj.guessed_chars = []
@@ -90,12 +98,27 @@ class AppTest(unittest.TestCase):
 
     def test_guess(self):
         pass
+    # valid, long, num_sym, repeat,
 
     def test_check_letter(self):
-        pass
+        res_one = self.obj.check_letter("A")
+        self.assertEqual(res_one, "smack")
+        self.assertEqual(self.obj.incorrect_count, 1)
+        self.obj.incorrect_count = 0
+
+        res_two = self.obj.check_letter("E")
+        self.assertEqual(res_two, "pep")
+        self.assertEqual(self.obj.correct_count, 1)
+        self.obj.correct_count = 0
+
+        res_three = self.obj.check_letter("T")
+        self.assertEqual(res_three, "pep")
+        self.assertEqual(self.obj.correct_count, 2)
+        self.obj.correct_count = 0
 
     def test_again(self):
         pass
+    # y, n, invalid
 
     def test_player_won(self):
         self.obj.correct_count = self.obj.secret.length
@@ -117,6 +140,7 @@ class AppTest(unittest.TestCase):
         self.obj.incorrect_count = 0
         self.assertFalse(self.obj.player_lost)
 
+    # no idea how to test this
     def test_play(self):
         pass
 
