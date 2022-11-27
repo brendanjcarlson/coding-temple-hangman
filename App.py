@@ -144,7 +144,7 @@ class App:
     # ASKS USER IF THEY WANT TO PLAY AGAIN
     def again(self):
         time.sleep(1)
-        user_again = input(self.dialogue["inputs"]["play_again"])
+        user_again = input(self.dialogue["inputs"]["play_again"]).lower()
         againing = True
         while againing:
             if user_again.startswith('y'):
