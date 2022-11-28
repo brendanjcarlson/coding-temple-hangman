@@ -10,6 +10,8 @@ from RandomWord import RandomWord
 from App import App
 
 
+# I've really struggled to find resources on how to test input/outputs without doing something that seems super hacky.
+# I just passed on running those tests and brute forced it, I will update it when I know more about testing
 class RandomWordTest(unittest.TestCase):
 
     def setUp(self):
